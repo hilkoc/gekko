@@ -8,6 +8,7 @@
       .menu.contain
         router-link(to='/home').py1 Home
         router-link(to='/live-gekkos').py1 Live Gekkos
+        router-link(to='/pnl').py1 PnL
         router-link(to='/backtest').py1 Backtest
         router-link(to='/data').py1 Local data
         router-link(to='/config').py1 Config
