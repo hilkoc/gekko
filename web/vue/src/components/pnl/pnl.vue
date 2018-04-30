@@ -1,19 +1,12 @@
 <template lang='jade'>
 div.contain
-  h2 Config
+  h2 Profit and Loss
   .hr
-  h3 Available API keys
-  p(v-if='!apiKeySets.length')
-    em You don't have any API keys yet.
-  ul
-    li(v-for='exchange in apiKeySets') {{ exchange }} (
-      a(href='#', v-on:click.prevent='removeApiKey(exchange)') remove
-      | )
-  a.btn--primary(href='#', v-if='!addApiToggle', v-on:click.prevent='openAddApi') Add an API key
-  template(v-if='addApiToggle')
-    .hr
-    pnlConfigBuilder
+  h3 Trade History
+  a.btn--primary(href='#', v-on:click.prevent='openAddApi') Sync trades
   .hr
+  h3 Live positions
+  a.btn--primary(href='#', v-on:click.prevent='openAddApi') Sync live spots
   
 </template>
 
