@@ -61,6 +61,11 @@ router.post('/api/startGekko', require(ROUTE('startGekko')));
 router.post('/api/killGekko', require(ROUTE('killGekko')));
 router.post('/api/getCandles', require(ROUTE('getCandles')));
 
+// Routes for trade pnl
+const pnl = require(ROUTE('pnl'));
+router.get('/api/pnlTest', pnl.test);
+router.post('/api/pnlSyncTrades', pnl.syncTrades);
+router.get('/api/pnlSyncSpots', pnl.syncSpots);
 
 // incoming WS:
 // wss.on('connection', ws => {
