@@ -8,8 +8,9 @@ module.exports = {
      */
     console.log("pnl.js - syncTrades");
     let answer =  {
-      status: 'ok',
-      t: 'Trade PnL trades'
+      headers: ['time', 'price', 'volume', 'fee'],
+      t: 'Trade PnL trades',
+      rows: [{time: '2018-05-05', price: '8208.8', volume: '0.047', fee: '1.22'}, {time: '2018-05-05', price: '808.8', volume: '0.47', fee: '2.22'},]
     };
     this.body = answer;
   },

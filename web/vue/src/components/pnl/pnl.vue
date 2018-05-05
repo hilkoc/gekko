@@ -1,31 +1,31 @@
 <template lang='jade'>
 div.contain
   h2 Profit and Loss
-  .hr
-  h3 Trade History
   a.btn--primary(href='#', v-on:click.prevent='syncTrades') Sync trades
-  .hr
   template(v-if='showTrades')
+    h3 Trade History
+    .hr  
     p button clicked! Showing trades...
-    p {{trades}}  
+    p {{trades}}
+    tradeTable(:roundtrips='this.trades')
     .hr
+
     h3 Live positions
     a.btn--primary(href='#', v-on:click.prevent='syncSpots') Sync live spots
-    template(v-if='showTrades')
-      p button clicked! And showing live pnl...
-      p {{spots}}
+    p button clicked! And showing live pnl...
+    p {{spots}}
 
   
 </template>
 
 <script>
-import pnlConfigBuilder from './pnlConfigBuilder.vue';
 import { post } from '../../tools/ajax';
 import {get } from '../../tools/ajax';
+import tradeTable from './tradeTable.vue'
 
 export default {
   components: {
-    pnlConfigBuilder
+    tradeTable
   },
  
   methods: {
@@ -58,7 +58,7 @@ export default {
         console.log(" my response");        
         console.log(response);
 
-        this.trades = response.t;
+        this.trades = response.rows;
       });      
     },
     
@@ -81,16 +81,7 @@ export default {
       
       this.spots = "Clicked syncSpots!! It works";
     },
-    
-    removeApiKey: function(exchange) {
-      if(!confirm('Are you sure you want to delete these API keys?'))
-        return;
 
-      post('removeApiKey', {exchange}, (error, response) => {
-        if(error)
-          return alert(error);
-      });
-    }
   }
 
 }
