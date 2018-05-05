@@ -1,14 +1,14 @@
 <template lang='jade'>
   .contain.trades
-    table(v-if='roundtrips.length')
+    table(v-if='positions.length')
       thead
         tr
-          th Time
+          th Pair
           th Price
           th Volume
           th Fee P&amp;L
-        tr(v-for='rt in roundtrips')
-          td {{ fmt(rt.time) }}
+        tr(v-for='rt in positions')
+          td {{ fmt(rt.pair) }}
           td {{ round(rt.price) }}
           td {{ round(rt.volume) }}
           td {{ rt.fee }}
@@ -18,13 +18,13 @@
           //template(v-else)
           //  td.profit {{ rt.fee.toFixed(2) }}
           // td.profit {{ rt.fee.toFixed(2) }}%
-    div(v-if='!roundtrips.length')
+    div(v-if='!positions.length')
       p Not enough data to display
 </template>
 
 <script>
 export default {
-  props: ['roundtrips'],
+  props: ['positions'],
   data: () => {
     return {}
   },

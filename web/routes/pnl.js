@@ -9,7 +9,7 @@ module.exports = {
     console.log("pnl.js - syncTrades");
     let answer =  {
       headers: ['time', 'price', 'volume', 'fee'],
-      t: 'Trade PnL trades',
+      trade_msg: 'Fetched 2 trades',
       rows: [{time: '2018-05-05', price: '8208.8', volume: '0.047', fee: '1.22'}, {time: '2018-05-05', price: '808.8', volume: '0.47', fee: '2.22'},]
     };
     this.body = answer;
@@ -21,8 +21,9 @@ module.exports = {
      */
     console.log("pnl.js - syncSpots");
     let answer =  {
-      status: 'ok',
-      t: 'Trade PnL spots'
+      headers: ['pair', 'time', 'price', 'volume', 'fee'],
+      position_msg: 'Fetched 2 positions',
+      rows: [{pair: 'XBTZUSD', time: '2018-01-01', price: '8208.8', volume: '0.047', fee: '1.22'}, {pair: 'XETHZUSD', time: '2018-02-02', price: '808.8', volume: '0.47', fee: '2.22'},]
     };
     this.body = answer;
   },

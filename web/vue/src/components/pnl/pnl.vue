@@ -1,31 +1,34 @@
 <template lang='jade'>
 div.contain
   h2 Profit and Loss
+  .hr
   a.btn--primary(href='#', v-on:click.prevent='syncTrades') Sync trades
   template(v-if='showTrades')
-    h3 Trade History
-    .hr  
+    h3 Trades
     p button clicked! Showing trades...
-    p {{trades}}
+    p {{trade_msg}}
     tradeTable(:roundtrips='this.trades')
+
     .hr
 
-    h3 Live positions
     a.btn--primary(href='#', v-on:click.prevent='syncSpots') Sync live spots
-    p button clicked! And showing live pnl...
-    p {{spots}}
+    h3 Live positions
+    p {{position_msg}}
+    positionTable(:positions='this.positions')
 
   
 </template>
 
 <script>
 import { post } from '../../tools/ajax';
-import {get } from '../../tools/ajax';
+import { get } from '../../tools/ajax';
 import tradeTable from './tradeTable.vue'
+import positionTable from './positionTable.vue'
 
 export default {
   components: {
-    tradeTable
+    tradeTable,
+    positionTable
   },
  
   methods: {
@@ -38,8 +41,10 @@ export default {
   data: () => {
     return {
       showTrades: false,
+      trade_msg: "No trades fetched",
+      position_msg: "No positions",
       trades: "No trades yet",
-      spots: "No spots",
+      positions: "No positions yet",
     }
   },
   
@@ -47,7 +52,7 @@ export default {
     syncTrades: function() {
       this.showTrades = true;
       // Post request to get new trades
-      console.log("getting response");
+      //console.log("getting response");
         
       post('pnlSyncTrades', {}, (error, response) => {
         if(error) {
@@ -55,9 +60,10 @@ export default {
           console.log(error);
           return alert(error);
         }
-        console.log(" my response");        
-        console.log(response);
+        //console.log(" my response");        
+        //console.log(response);
 
+        this.trade_msg = response.trade_msg;
         this.trades = response.rows;
       });      
     },
