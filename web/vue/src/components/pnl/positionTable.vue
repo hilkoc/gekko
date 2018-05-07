@@ -11,17 +11,15 @@
           th P&amp;L (%)
         tr(v-for='row in positions')
           td {{ row.pair }}
-          td {{ row.position }}
-          td {{ row.average_open }}
-          td {{ round(row.price) }}
-          td {{ round(row.cash_pnl) }}
-          td {{ round(row.rel_pnl) }}
-          //template(v-if="Math.sign(rt.fee)===-1")
-          //  td.loss {{ Math.sign(rt.fee)*rt.fee.toFixed(2) }}
-          //  td.loss {{ rt.fee.toFixed(2) }}%
-          //template(v-else)
-          //  td.profit {{ rt.fee.toFixed(2) }}
-          // td.profit {{ rt.fee.toFixed(2) }}%
+          td {{ round4(row.position) }}
+          td {{ round2(row.average_open) }}
+          td {{ round2(row.price) }}
+          template(v-if="row.cash_pnl<0")
+            td.loss {{ round2(row.cash_pnl) }}
+            td.loss {{ round2(row.rel_pnl) }}%
+          template(v-else)
+            td.profit {{ round2(row.cash_pnl) }}
+            td.profit {{ round2(row.rel_pnl) }}%
     div(v-if='!positions.length')
       p No positions to display
 </template>
@@ -33,10 +31,8 @@ export default {
     return {}
   },
   methods: {
-    diff: n => moment.duration(n).humanize(),
-    humanizeDuration: (n) => window.humanizeDuration(n),
-    fmt: mom => moment.utc(mom).format('YYYY-MM-DD HH:mm'),
-    round: n => (+n).toFixed(3),
+    round2: n => (+n).toFixed(2),
+    round4: n => (+n).toFixed(4),
   },
 }
 </script>

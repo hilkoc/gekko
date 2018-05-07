@@ -56,18 +56,14 @@ module.exports = {
     /** Fetches the new trades from the exchange and stores them in the database.
      *  Returns a list of new trades or the last 5 if no new trades found.
      */
-    console.log("pnl.js - syncTrades");
         
-    let nr_rows = 5;
-    
+    let nr_rows = 10; // Default nr of rows to show
     // use yield instead of await 
     let nr_new_trades = yield app.fetch_new_trades();
-    let msg = "Fetched " + nr_new_trades + " new trades.";
-    console.log(msg);
     
-    // If no new trades, then show pnl for the last 5.
+    // If no new trades, then show pnl for the last 10.
     nr_rows = Math.max(nr_new_trades, nr_rows);
-    msg = msg + "<br \>Showing last " + nr_rows + " trades.";
+    let msg = "Fetched " + nr_new_trades + " new trades. Showing last " + nr_rows + " trades.";
     
     let all_rows = yield trade_pnl_rows(nr_rows);
     
@@ -83,7 +79,6 @@ module.exports = {
     /** Queries the latest spot prices from the exchange and calculates the live PnL.
      *  Returns a list of positions.
      */
-    console.log("pnl.js - syncSpots");
     
     let all_rows = yield app.get_all_positions();
     console.log(all_rows);
@@ -93,10 +88,6 @@ module.exports = {
       rows: all_rows
     };
     this.body = answer;
-  },
-  
-  test: function *() {
-    this.body = "Trade PnL says hello";
   },
 
 }

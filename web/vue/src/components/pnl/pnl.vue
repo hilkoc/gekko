@@ -3,18 +3,16 @@ div.contain
   h2 Profit and Loss
   .hr
   a.btn--primary(href='#', v-on:click.prevent='syncTrades') Sync trades
-  //template(v-if='showTrades')
-  h3 Trades
-  p {{trade_msg}}
-  tradeTable(:trades='this.trades')
-  
-  .hr
-   
-  a.btn--primary(href='#', v-on:click.prevent='syncSpots') Sync live spots
-  h3 Live positions
-  p {{position_msg}}
-  positionTable(:positions='this.positions')
+  template(v-if='showTrades')
+    h3 Trades
+    p {{trade_msg}}
+    tradeTable(:trades='this.trades')
 
+    .hr
+    a.btn--primary(href='#', v-on:click.prevent='syncSpots') Sync live prices
+    h3 Live positions
+    positionTable(:positions='this.positions')
+    p {{position_msg}}
   
 </template>
 
@@ -51,48 +49,40 @@ export default {
     syncTrades: function() {
       this.showTrades = true;
       // Post request to get new trades
-      //console.log("getting response");
         
       post('pnlSyncTrades', {}, (error, response) => {
         if(error) {
-          console.log("error in sync trades:");
-          console.log(error);
-          return alert(error);
+          console.error("error in sync trades:");
+          console.error(error);
+          this.trade_msg = error;
         }
-        //console.log(" my response");        
-        console.log(response);
 
         this.trade_msg = response.trade_msg;
         this.trades = response.rows;
       });
       
-      this.syncPositions(); 
+      this.syncPositions();
     },
     
     syncPositions: function() {
-      // Cannot be clicked before trades are fetched
+      // Must be called after trades are fetched
       this.showTrades = true;
       // Get request to get positions
       
       get('pnlSyncSpots', (error, response) => {
         if(error) {
-          console.log("error in sync spots:");
-          console.log(error);
-          return alert(error);
+          console.error("error in sync spots:");
+          console.error(error);
+          this.position_msg = error;
         }
-        console.log(" position response");        
-        console.log(response);
 
         this.position_msg = response.position_msg;
         this.positions = response.rows;
+        // Spots can only be synced if the positions are fully loaded.
+        this.syncSpots();
       });  
     },
-    
-    testsyncSpots: function() {
-        let price_map = this.livePrices(['XXBTZUSD','XETHZUSD'], console.log);
-        console.log(price_map);
-    },
-    
+
     livePrices: function(pairs, callback) {
       // Fetch a map with the prices for requested pairs
       // TODO split this into a separate module, make exchange configurable
@@ -110,15 +100,13 @@ export default {
       }).then( function(response) {
         return response.json();
       }).then(function(data) {
-        console.log('Request succeeded with JSON response', data);
         let price_map = {};
         pairs.forEach( function(pair) {
             const ticker = data.result[pair];
-            console.log(ticker);
             const last_traded_price = parseFloat(ticker.c[0]);
             price_map[pair] = last_traded_price;
         });
-        callback( price_map);
+        callback(price_map);
       }).catch(function(error) {
         console.log('Request failed', error);
         this.position_msg = error;
@@ -133,16 +121,16 @@ export default {
       let new_rows = [];
       let positions = this.positions;
       let price_map_callback = function (price_map) {
-          console.log( 'in price_map_callback');
           positions.forEach( (row) => {
-                row.price = price_map[row.pair];
-                row.cash_pnl = row.position * (row.price - row.average_open);
-                row.rel_pnl = (row.price / row.average_open -1) * 100;
-                new_rows.push(row);
+            row.price = price_map[row.pair];
+            row.cash_pnl = row.position * (row.price - row.average_open);
+            row.rel_pnl = row.average_open == 0 ? 0 : (row.price / row.average_open -1) * 100;
+            new_rows.push(row);
           });
       };
       let price_map = this.livePrices(pairs, price_map_callback);
       this.positions = new_rows;
+      this.position_msg = "Prices updated at " + new Date();
     }
   }
 

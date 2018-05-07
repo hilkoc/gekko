@@ -24,16 +24,16 @@
           td {{ round4(row.volume) }}
           td {{ round4(row.position) }}
           td {{ round2(row.average_open) }}
-          td {{ round2(row.cash_pnl) }}
+          template(v-if="row.cash_pnl<0")
+            td.loss {{ round2(row.cash_pnl) }}
+          template(v-else)
+            td.profit {{ round2(row.cash_pnl) }}
           td {{ round4(row.fee) }}
-          td {{ round2(row.total_pnl) }}
+          template(v-if="row.total_pnl<0")
+            td.loss {{ round2(row.total_pnl) }}
+          template(v-else)
+            td.profit {{ round2(row.total_pnl) }}
           td {{ round2(row.total_fees) }}
-          //template(v-if="row.cash_pnl < 0 ")
-          //  td.loss {{ Math.sign(row.cash_pnl)*row.cash_pnl.toFixed(2) }}
-          //  td.loss {{ row.cash_pnl.toFixed(2) }}%
-          //template(v-else)
-          //  td.profit {{ rt.cash_pnl.toFixed(2) }}
-          // td.profit {{ rt.cash_pnl.toFixed(2) }}%
     div(v-if='!trades.length')
       p No trades to display
 </template>
