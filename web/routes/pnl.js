@@ -1,5 +1,52 @@
-/** Webservice endpoint for trade profit and loss. */
+/**
+ * MIT License
+ * Copyright (c) 2018 Hilkoc
+ * 
+ * Webservice endpoint for trade profit and loss. 
+ */
+
 "use strict"
+
+
+const exchange = require('../../tradepnl/exchange').makeExchange();
+const storage = require('../../tradepnl/storage').makeStorage();
+const App = require('../../tradepnl/tradepnl');
+const app = new App(exchange, storage);
+
+
+async function trade_pnl_rows(nr_rows) {
+    /** Aggregates the rows. */
+
+    let all_rows = [];    
+
+    const row_callback = function (err, row) {
+        let r = [row.id, row.time, row.pair, row.price, row.type, row.volume, row.position, row.average_open, row.cash_pnl, row.fee, row.total_pnl, row.total_fees]
+        all_rows.push(r);
+    }
+
+    await app.process_trade_pnl(nr_rows, row_callback);
+    return all_rows;
+}
+
+
+async function live_pnl_rows() {
+    /** Aggregates the live position rows. */
+
+    let all_rows = [];  
+    
+    async function get_live_pnl(row) {
+        let price = await exchange.get_rate(row.pair);
+        let ao = row.average_open;
+        let cash_pnl = row.position * (price - ao);
+        let rel_pnl = (price / ao - 1) * 100;
+        
+        let r = [row.pair, row.position, ao, price, cash_pnl, rel_pnl];
+
+        all_rows.push(r);
+    }
+
+    return all_rows;
+}
 
 module.exports = {
   syncTrades: function *() {
@@ -7,10 +54,24 @@ module.exports = {
      *  Returns a list of new trades or the last 5 if no new trades found.
      */
     console.log("pnl.js - syncTrades");
+        
+    let nr_rows = 5;
+    
+    // use yield instead of await 
+    let nr_new_trades = yield app.fetch_new_trades();
+    let msg = "Fetched " + nr_new_trades + " new trades.";
+    console.log(msg);
+    
+    // If no new trades, then show pnl for the last 5.
+    nr_rows = Math.max(nr_new_trades, nr_rows);
+    msg = msg + "<br \>Showing last " + nr_rows + " trades.";
+    
+    let all_rows = yield trade_pnl_rows(nr_rows);
+    
     let answer =  {
-      headers: ['time', 'price', 'volume', 'fee'],
-      trade_msg: 'Fetched 2 trades',
-      rows: [{time: '2018-05-05', price: '8208.8', volume: '0.047', fee: '1.22'}, {time: '2018-05-05', price: '808.8', volume: '0.47', fee: '2.22'},]
+        trade_msg: msg,
+        headers: ["id", "time", "pair", "price", "type", "volume", "position", "average_open", "cash_pnl", "fee", "total pnl", "total fees"],
+        rows: all_rows
     };
     this.body = answer;
   },
@@ -20,10 +81,13 @@ module.exports = {
      *  Returns a list of positions.
      */
     console.log("pnl.js - syncSpots");
+    
+    let all_rows = yield app.process_live_pnl();
+    console.log(all_rows);
     let answer =  {
-      headers: ['pair', 'time', 'price', 'volume', 'fee'],
-      position_msg: 'Fetched 2 positions',
-      rows: [{pair: 'XBTZUSD', time: '2018-01-01', price: '8208.8', volume: '0.047', fee: '1.22'}, {pair: 'XETHZUSD', time: '2018-02-02', price: '808.8', volume: '0.47', fee: '2.22'},]
+      headers: ["pair", "position",  "average_open", "price", "PnL (term)", "PnL %"],
+      position_msg: 'Showing live positions',
+      rows: all_rows
     };
     this.body = answer;
   },

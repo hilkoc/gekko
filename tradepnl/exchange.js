@@ -10,7 +10,7 @@
  * This implementation connects to Kraken. 
  */
 
-const KrakenClient = require('kraken-api');
+const KrakenClient = require('kraken-api-es5');
 //const async_module = require('async'); // Needed for async functions
 
 class Exchange {
