@@ -7,7 +7,7 @@ div.contain
     h3 Trades
     p button clicked! Showing trades...
     p {{trade_msg}}
-    tradeTable(:roundtrips='this.trades')
+    tradeTable(:trades='this.trades')
 
     .hr
 
@@ -61,7 +61,7 @@ export default {
           return alert(error);
         }
         //console.log(" my response");        
-        //console.log(response);
+        console.log(response);
 
         this.trade_msg = response.trade_msg;
         this.trades = response.rows;
@@ -79,13 +79,14 @@ export default {
           console.log(error);
           return alert(error);
         }
-        console.log(" my response");        
+        console.log(" position response");        
         console.log(response);
 
-        this.spots = response.t;
+        this.position_msg = response.position_msg;
+        this.positions = response.rows;
       });  
       
-      this.spots = "Clicked syncSpots!! It works";
+      
     },
 
   }

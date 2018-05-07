@@ -4,14 +4,18 @@
       thead
         tr
           th Pair
-          th Price
-          th Volume
-          th Fee P&amp;L
-        tr(v-for='rt in positions')
-          td {{ fmt(rt.pair) }}
-          td {{ round(rt.price) }}
-          td {{ round(rt.volume) }}
-          td {{ rt.fee }}
+          th Position
+          th Average Open
+          th Current Price
+          th P&amp;L (term)
+          th P&amp;L (%)
+        tr(v-for='row in positions')
+          td {{ row.pair }}
+          td {{ row.position }}
+          td {{ row.average_open }}
+          td {{ round(row.price) }}
+          td {{ round(row.cash_pnl) }}
+          td {{ round(row.rel_pnl) }}
           //template(v-if="Math.sign(rt.fee)===-1")
           //  td.loss {{ Math.sign(rt.fee)*rt.fee.toFixed(2) }}
           //  td.loss {{ rt.fee.toFixed(2) }}%
@@ -19,7 +23,7 @@
           //  td.profit {{ rt.fee.toFixed(2) }}
           // td.profit {{ rt.fee.toFixed(2) }}%
     div(v-if='!positions.length')
-      p Not enough data to display
+      p No positions to display
 </template>
 
 <script>

@@ -20,7 +20,10 @@ async function trade_pnl_rows(nr_rows) {
     let all_rows = [];    
 
     const row_callback = function (err, row) {
-        let r = [row.id, row.time, row.pair, row.price, row.type, row.volume, row.position, row.average_open, row.cash_pnl, row.fee, row.total_pnl, row.total_fees]
+        let r = {id: row.id, time: row.time, pair: row.pair, price: row.price, type: row.type, volume: row.volume,
+                position: row.position, average_open: row.average_open, cash_pnl: row.cash_pnl, fee: row.fee, 
+                total_pnl: row.total_pnl, total_fees: row.total_fees
+        }
         all_rows.push(r);
     }
 
@@ -82,7 +85,7 @@ module.exports = {
      */
     console.log("pnl.js - syncSpots");
     
-    let all_rows = yield app.process_live_pnl();
+    let all_rows = yield app.get_all_positions();
     console.log(all_rows);
     let answer =  {
       headers: ["pair", "position",  "average_open", "price", "PnL (term)", "PnL %"],

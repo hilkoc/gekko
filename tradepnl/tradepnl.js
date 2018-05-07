@@ -108,10 +108,8 @@ class App {
     }
     
     
-    async process_live_pnl() {
-        let rows = await this.storage.get_all_positions();
-        console.log("process_live_pnl");
-        return rows;
+    async get_all_positions() {
+        return await this.storage.get_all_positions();
     }
     
 }
