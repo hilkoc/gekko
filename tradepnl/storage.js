@@ -9,10 +9,9 @@
  * Class for saving and retrieving trades. This implementation uses sqlite database.
  */
 
-let sqlite3 = require('sqlite3').verbose(); // Add .verbose(); for debugging
+let sqlite3 = require('sqlite3') // Add .verbose(); for debugging
 
-let DB_FILE = '../history/trades.db'; // Default location
-
+let DB_FILE = __dirname + '/../history/trades.db'; // Default location
 
 // queries
 const CREATE_TABLE_TRADES = "CREATE TABLE IF NOT EXISTS trades ( \
