@@ -81,7 +81,7 @@ module.exports = {
      */
     
     let all_rows = yield app.get_all_positions();
-    console.log(all_rows);
+
     let answer =  {
       headers: ["pair", "position",  "average_open", "price", "PnL (term)", "PnL %"],
       position_msg: 'Showing live positions',

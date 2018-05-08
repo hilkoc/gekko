@@ -31,7 +31,7 @@ export default {
   methods: {
     diff: n => moment.duration(n).humanize(),
     humanizeDuration: (n) => window.humanizeDuration(n),
-    fmt: mom => moment.utc(mom).format('YYYY-MM-DD HH:mm'),
+    fmt: mom => moment.utc(mom).format('MM-DD HH:mm:ss'),
     round: n => (+n).toFixed(3),
   },
   
@@ -130,7 +130,7 @@ export default {
       };
       let price_map = this.livePrices(pairs, price_map_callback);
       this.positions = new_rows;
-      this.position_msg = "Prices updated at " + new Date();
+      this.position_msg = "Prices updated at " + moment.utc().format('HH:mm:ss');
     }
   }
 
