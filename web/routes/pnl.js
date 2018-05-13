@@ -57,7 +57,7 @@ module.exports = {
      *  Returns a list of new trades or the last 5 if no new trades found.
      */
         
-    let nr_rows = 10; // Default nr of rows to show
+    let nr_rows = 5; // Default nr of rows to show
     // use yield instead of await 
     let nr_new_trades = yield app.fetch_new_trades();
     

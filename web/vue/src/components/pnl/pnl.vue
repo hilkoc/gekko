@@ -125,12 +125,14 @@ export default {
             row.price = price_map[row.pair];
             row.cash_pnl = row.position * (row.price - row.average_open);
             row.rel_pnl = row.average_open == 0 ? 0 : (row.price / row.average_open -1) * 100;
+            row.invested = row.position * row.average_open;
+            row.value = row.position * row.price;
             new_rows.push(row);
           });
       };
       let price_map = this.livePrices(pairs, price_map_callback);
       this.positions = new_rows;
-      this.position_msg = "Prices updated at " + moment.utc().format('HH:mm:ss');
+      this.position_msg = "Prices updated at " + moment().format('HH:mm:ss');
     }
   }
 

@@ -7,6 +7,8 @@
           th Position
           th Average Open
           th Current Price
+          th Invested
+          th Current Value
           th P&amp;L (term)
           th P&amp;L (%)
         tr(v-for='row in positions')
@@ -14,6 +16,8 @@
           td {{ round4(row.position) }}
           td {{ round2(row.average_open) }}
           td {{ round2(row.price) }}
+          td {{ round2(row.invested) }}
+          td {{ round2(row.value) }}
           template(v-if="row.cash_pnl<0")
             td.loss {{ round2(row.cash_pnl) }}
             td.loss {{ round2(row.rel_pnl) }}%
