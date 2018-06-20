@@ -1,17 +1,18 @@
 const _ = require('lodash');
 const promisify = require('tiny-promisify');
-const moment = require('moment');
 
-const pipelineRunner = promisify(require('../../core/workers/pipeline/parent'));
+const pipelineRunner = require('../../core/workers/pipeline/parent');
 const cache = require('../state/cache');
 const Logger = require('../state/logger');
 const broadcast = cache.get('broadcast');
 const apiKeyManager= cache.get('apiKeyManager');
 const gekkoManager = cache.get('gekkos');
+const childManager = cache.get('child_runners');
+
 
 const base = require('./baseConfig');
 
-// starts an import
+// starts a gekko bot
 // requires a post body with a config object
 module.exports = function *() {
   const mode = this.request.body.mode;
@@ -141,7 +142,6 @@ module.exports = function *() {
     broadcast(wsEvent);
   });
 
-  const now = moment.utc().format();
 
   var gekko = {
     watch: config.watch,
@@ -149,7 +149,10 @@ module.exports = function *() {
     startAt: '',
     latest: '',
     mode,
-    type
+    type,
+    // Cannot store child within the gekko, because it will be cloned
+    // and causes a JSON circular ref. Store the pid instead.
+    child_pid: child.pid
   }
 
   if(config.tradingAdvisor && config.tradingAdvisor.enabled) {
@@ -169,6 +172,7 @@ module.exports = function *() {
   }
 
   gekkoManager.add(gekko);
+  childManager[child.pid] = child;
 
   broadcast({
     type: 'new_gekko',

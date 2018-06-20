@@ -33,6 +33,7 @@ cache.set('broadcast', broadcast);
 // initialize lists and dump into cache
 cache.set('imports', new ListManager);
 cache.set('gekkos', new ListManager);
+cache.set('child_runners', {}); // ListManager cannot be used, because it clones its items.
 cache.set('apiKeyManager', require('./apiKeyManager'));
 
 // setup API routes

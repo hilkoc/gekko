@@ -30,6 +30,8 @@ module.exports = (mode, config, callback) => {
   });
 
   child.on('exit', handle.exit);
+  
+  console.log(`parent.js forked child with pid: ${child.pid}`);
 
   return child;
 }
